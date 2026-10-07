@@ -13,12 +13,14 @@ def format_record(rec: tuple[str, str, float]) -> str:
         Строка вида "Иванов И.И., гр. BIVT-25, GPA 4.60".
 
     Raises:
-        TypeError: если GPA не число либо ФИО или группа не строки или если rec не кортеж из трёх элементов.
+        TypeError: если GPA не число либо ФИО или группа не строки или если rec не кортеж.
         ValueError: если ФИО содержит меньше двух частей (нет имени),
-            группа пустая, либо gpa не в диапазоне 0.0 <= GPA <= 5.0.
+            группа пустая, либо gpa не в диапазоне 0.0 <= GPA <= 5.0, либо rec не кортеж из 3-х элементов.
     """
-    if not isinstance(rec, tuple) or len(rec) != 3:
-        raise TypeError("rec должен быть кортежем из трёх элементов")
+    if not isinstance(rec, tuple):
+        raise TypeError("rec должен быть кортежем")
+    if len(rec) != 3:
+        raise ValueError("rec должен содержать ровно три элемента")
     fio, group, gpa = rec
     if not isinstance(gpa, (int, float)):
         raise TypeError("gpa должен быть числом")

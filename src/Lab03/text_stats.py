@@ -22,10 +22,12 @@ def print_table(pairs: list[tuple[str, int]]) -> None:
     if not pairs:
         return
 
+    # не уже заголовка, иначе шапка разъедется
     width = max(len("слово"), max(len(word) for word, _ in pairs))
     header = f"{'слово':<{width}} | частота"
 
     print(header)
+    # длина черты — по длине шапки, чтобы совпадала всегда
     print("-" * len(header))
     for word, count in pairs:
         print(f"{word:<{width}} | {count}")
@@ -56,4 +58,5 @@ def main(table_mode: bool = False) -> None:
 
 
 if __name__ == "__main__":
+    # TABLE_MODE=1 включает таблицу, без неё — обычный вывод
     main(table_mode=os.environ.get("TABLE_MODE") == "1")

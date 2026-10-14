@@ -16,6 +16,7 @@ def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:
     Returns:
         Нормализованный текст.
     """
+    # split() без аргументов сам режет по \t \r \n и схлопывает пробелы
     text = ' '.join(text.split())
     if casefold:
         text = text.casefold()
@@ -38,6 +39,7 @@ def tokenize(text: str) -> list[str]:
     Returns:
         Список токенов.
     """
+    # дефис только внутри слова: "по-настоящему" целиком, "-слово" без дефиса
     return re.findall(r'\w+(?:-\w+)*', text)
 
 
@@ -52,6 +54,7 @@ def count_freq(tokens: list[str]) -> dict[str, int]:
     """
     freq = {}
     for token in tokens:
+        # get вернёт 0, если слово встретилось впервые
         freq[token] = freq.get(token, 0) + 1
     return freq
 
@@ -61,11 +64,19 @@ def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
 
     Args:
         freq: словарь частот токенов.
-        n: количество токенов для возврата.
+        n: сколько токенов вернуть; если n больше размера словаря,
+            вернутся все.
 
     Returns:
-        Список кортежей (токен, частота), отсортированных по убыванию частоты.
+        Список кортежей (токен, частота): по убыванию частоты, а при
+        равной частоте — по алфавиту слова.
+
+    Raises:
+        ValueError: если n отрицательное.
     """
+    if n < 0:
+        raise ValueError("n не может быть отрицательным")
+    # минус у частоты — чтобы шло по убыванию, слово — по алфавиту
     return sorted(freq.items(), key=lambda x: (-x[1], x[0]))[:n]
 
 

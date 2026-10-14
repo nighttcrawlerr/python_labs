@@ -46,8 +46,10 @@ def main() -> None:
     for p in args.inp:
         text = read_text(p, encoding=args.encoding)
         tokens = tokenize(normalize(text))
+        # в общую кучу — для сводного отчёта
         all_tokens.extend(tokens)
 
+        # в колонке file нужно только имя, без пути
         name = Path(p).name
         for word, count in count_freq(tokens).items():
             per_file_rows.append((name, word, count))
@@ -55,11 +57,13 @@ def main() -> None:
     freq = count_freq(all_tokens)
     rows = sorted(freq.items(), key=lambda x: (-x[1], x[0]))
 
+    # --total если задан, иначе обычный --out
     total_path = args.total or args.out
     ensure_parent_dir(total_path)
     write_csv(rows, total_path, header=("word", "count"))
 
     if args.per_file:
+        # файл по алфавиту, частота вниз, слово по алфавиту
         per_file_rows.sort(key=lambda r: (r[0], -r[2], r[1]))
         ensure_parent_dir(args.per_file)
         write_csv(per_file_rows, args.per_file,

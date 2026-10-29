@@ -257,3 +257,62 @@ pip install -r requirements.txt
 
 Файл: `src/Lab05/csv_xlsx.py`
 Скрин: ![задание 2](images/Lab05/02.png)
+
+# Лабораторная 6 — CLI-утилиты на argparse
+
+Две утилиты с подкомандами. Каждая подкоманда оборачивает функции, которые уже написаны в ЛР3 и ЛР5, своей логики в конвертерах нет.
+
+Запуск всегда из корня проекта через `-m`, чтобы работали и импорты, и относительные пути к данным. Конвертер в XLSX требует openpyxl, поэтому запускать из виртуального окружения: `.venv/bin/python`.
+
+У каждой подкоманды есть `--help`. Если не указать обязательный флаг, argparse сам печатает ошибку и подсказку по использованию. Если входного файла нет, программа падает с FileNotFoundError.
+
+## Задание 1 — cat
+
+Печатает файл построчно. С флагом `-n` строки нумеруются с единицы. Флаг без значения: есть `-n` — нумерация, нет — чистый вывод.
+
+Запуск:
+```
+.venv/bin/python -m src.Lab06.cli_text cat --input data/samples/people.csv -n
+```
+
+Файл: `src/Lab06/cli_text.py`
+Скрин: ![задание 1](images/Lab06/01.png)
+
+## Задание 2 — stats
+
+Считает частоты слов функциями из ЛР3: нормализация, разбиение на слова, подсчёт. Печатает сколько всего слов, сколько уникальных и топ. Размер топа задаётся флагом `--top`, по умолчанию 5, argparse сам приводит его к числу.
+
+Запуск:
+```
+.venv/bin/python -m src.Lab06.cli_text stats --input data/samples/people.txt --top 5
+```
+
+Файл: `src/Lab06/cli_text.py`
+Скрин: ![задание 2](images/Lab06/02.png)
+
+## Задание 3 — конвертеры
+
+Три подкоманды: json2csv, csv2json и csv2xlsx. Вызывают функции из ЛР5. Флаги у всех одинаковые: `--in` для входного файла и `--out` для выходного. Папка под результат создаётся, если её нет. Результаты лежат в `data/out/`.
+
+Запуск:
+```
+.venv/bin/python -m src.Lab06.cli_convert json2csv --in data/samples/people.json --out data/out/people.csv
+.venv/bin/python -m src.Lab06.cli_convert csv2json --in data/samples/people.csv --out data/out/people.json
+.venv/bin/python -m src.Lab06.cli_convert csv2xlsx --in data/samples/people.csv --out data/out/people.xlsx
+```
+
+Файл: `src/Lab06/cli_convert.py`
+Скрин: ![задание 3](images/Lab06/03.png)
+
+## Задание 4 — справка
+
+Общая справка показывает список подкоманд, справка подкоманды — её флаги. На скриншоте справка конвертеров и справка подкоманды stats; справка есть у каждой подкоманды.
+
+Запуск:
+```
+.venv/bin/python -m src.Lab06.cli_convert --help
+.venv/bin/python -m src.Lab06.cli_text stats --help
+```
+
+Файл: `src/Lab06/cli_text.py`
+Скрин: ![задание 4](images/Lab06/04.png)

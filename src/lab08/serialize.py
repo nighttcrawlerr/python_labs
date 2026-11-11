@@ -2,7 +2,8 @@ import csv
 import json
 
 from src.Lab04.io_txt_csv import ensure_parent_dir
-from src.lab08.models import format_student, student_from_dict, student_to_dict
+from src.lab08.models import (format_student, student_from_dict,
+                              student_to_dict, update_student)
 
 
 def students_to_json(students: list[dict], path: str) -> None:
@@ -94,3 +95,11 @@ if __name__ == "__main__":
         students_from_json(bad)
     except ValueError as e:
         print(f"students_from_json (strict): {e}")
+
+    print("\n--- ★ CSV и update_student ---")
+    from_csv = students_from_csv("data/lab08/students.csv")
+    for s in from_csv:
+        print(" ", format_student(s))
+    print(f"тип gpa после чтения: {type(from_csv[0]['gpa']).__name__} (в CSV это была строка)")
+    updated = update_student(from_csv[0], gpa=4.8)
+    print(f"update_student: gpa {updated['gpa']}, у исходной записи по-прежнему {from_csv[0]['gpa']}")

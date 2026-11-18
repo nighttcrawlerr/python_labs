@@ -66,13 +66,16 @@ def validate_student(rec: dict) -> None:
     _check_values(rec["fio"], rec["birthdate"], rec["group"], rec["gpa"])
 
 
-def student_age(rec: dict, today: date | None = None) -> int:
+def student_age(rec: dict, today: date | str | None = None) -> int:
     """Полных лет на дату today (по умолчанию сегодня).
 
+    today можно передать как date или строкой 'YYYY-MM-DD'.
     Родившийся 2007-09-20 на 2026-09-19 ещё не отметил день рождения: 18 лет.
     """
     born = date.fromisoformat(rec["birthdate"])
     today = today or date.today()
+    if isinstance(today, str):
+        today = date.fromisoformat(today)
     # кортеж (месяц, день) сравнивается как пара: был ли день рождения в этом году
     return today.year - born.year - ((today.month, today.day) < (born.month, born.day))
 
@@ -136,3 +139,12 @@ def update_student(rec: dict, **fields) -> dict:
         raise KeyError(f"неизвестные поля: {unknown}")
     # {**rec, **fields} — новый словарь, rec остаётся прежним
     return student_from_dict({**rec, **fields})
+
+
+def main():
+    s = make_student("hgf gfd gfd", "2006-01-01", "mivt-1-1", 4.2)
+    print(student_age(s, "2020-01-01"))
+
+
+if __name__ == '__main__':
+    main()
